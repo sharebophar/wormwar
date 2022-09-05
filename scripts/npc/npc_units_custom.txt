@@ -178,7 +178,7 @@
     	"BoundsHullName" "DOTA_HULL_SIZE_SMALL"
     	"RingRadius" "15"                                               
   		"MovementCapabilities" "DOTA_UNIT_CAP_MOVE_GROUND"                
-        "MovementSpeed" "225"                                             
+        "MovementSpeed" "310"                                             
         "MovementTurnRate" "1.5"                                           
     	"StatusHealth"				"1"                             
     	"StatusHealthRegen" "0"                                     

@@ -5,7 +5,16 @@
 	{
 		"override_hero"				"npc_dota_hero_nyx_assassin"
         "Models"                    "models/heroes/nerubian_assassin/nerubian_assassin.vmdl"
+		"Ability1" ""  
+  	  	"Ability2" ""
+  	  	"Ability3" ""
+    	"Ability4" ""
+  	  	"Ability5" ""
+    	"Ability6" ""
+  	  	"Ability7" ""
+    	"Ability8" ""
         "MovementTurnRate"          "1"                       // 转身速度
         "StatusHealth"				"1"
+		"MovementSpeed"				"310"
 	}
 }
