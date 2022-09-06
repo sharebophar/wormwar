@@ -1,20 +1,37 @@
 "DOTAHeroes"
 {
 
-	"little_strong"
+	"snake"
 	{
 		"override_hero"				"npc_dota_hero_nyx_assassin"
         "Models"                    "models/heroes/nerubian_assassin/nerubian_assassin.vmdl"
-		"Ability1" ""  
-  	  	"Ability2" ""
-  	  	"Ability3" ""
-    	"Ability4" ""
-  	  	"Ability5" ""
-    	"Ability6" ""
-  	  	"Ability7" ""
-    	"Ability8" ""
+		"Ability1" 					"snake_move_left"  
+  	  	"Ability2" 					"snake_move_right"
+  	  	"Ability3" 					"snake_move_up"
+    	"Ability4" 					""
+  	  	"Ability5" 					""
+    	"Ability6" 					"snake_move_down"
+  	  	"Ability7" 					""
+    	"Ability8" 					""
+		"Ability9"					""
+		//天赋技能全部去掉，因为有天赋加无视地形
+		"Ability10"					""
+		"Ability11"					""
+		"Ability12"					""
+		"Ability13"					""
+		"Ability14"					""
+		"Ability15"					""
+		"Ability16"					""
+		"Ability17"					""
         "MovementTurnRate"          "1"                       // 转身速度
         "StatusHealth"				"1"
 		"MovementSpeed"				"310"
+		"AbilityDraftAbilities"
+		{
+			"Ability1"		"snake_move_left"
+			"Ability2"		"snake_move_right"
+			"Ability3"		"snake_move_up"
+			"Ability4"		"snake_move_down"
+		}
 	}
 }

@@ -139,51 +139,83 @@ function WormWar:OnNPCSpawned( keys )
 	local unit =  EntIndexToHScript(keys.entindex)
 	
 	if unit:IsHero() then
-		local player_id = unit:GetPlayerOwnerID() + 1 -- 使索引遵循lua的惯例，所以+1了
+		local nPlayerID = unit:GetPlayerOwnerID()
+		local player_id = nPlayerID + 1 -- 使索引遵循lua的惯例，所以+1了
 		PlayerStats[player_id]['body']={}
 		--PlayerStats[player_id]['group_length']=1
 		PlayerStats[player_id]['body'][1]={['unit']=unit,['body_index']=1}
-		-- 清除脏数据，效率应该比身体部分的移动行为频率高
-		self._GameMode:SetContextThink(DoUniqueString("HeroThinkTimer"), 
-        function()
-			ClearAllInvalid(player_id)
-			return 0
-		end,0)
-		-- 头部移动逻辑
-		self._GameMode:SetContextThink(DoUniqueString("HeroThinkTimer"), 
-        function()
-			local forward_vector=unit:GetForwardVector()
-			--local truechaoxiang=forward_vector:Normalized()
-			local position=unit:GetAbsOrigin()
-			unit:MoveToPosition(position+forward_vector*500)
-
-			local aroundit=FindUnitsInRadius(DOTA_TEAM_NEUTRALS, position, nil, 
-											100,
-											DOTA_UNIT_TARGET_TEAM_FRIENDLY,
-											DOTA_UNIT_TARGET_ALL,
-											DOTA_UNIT_TARGET_FLAG_NONE,
-											FIND_ANY_ORDER,
-											false)
-			for k,v in pairs(aroundit) do
-				local name_label=v:GetContext("name")
-				if name_label then
-					if name_label=="yang" then
-						v:ForceKill(true)
-						CreateBody(player_id)
-					end
-					if name_label=="niu" then
-						v:ForceKill(true)
-						CreateBody(player_id)
-						CreateBody(player_id)
-					end
-					if name_label == "huoren" then
-						v:ForceKill(true)
-						KillHalfBody(player_id)
-						BroadcastMessage("碰到了火人，掉了一半长度",5)
-					end
-				end	
+		-- 单次初始化内容
+		if not PlayerStats[player_id]['init'] then
+			PlayerStats[player_id]['init'] = true
+			-- 锁定视角到自身英雄
+			PlayerResource:SetCameraTarget( nPlayerID, unit )
+			-- 强制选择自身英雄
+			PlayerResource:SetOverrideSelectionEntity( nPlayerID, unit )
+			-- 设置两次表示可靠金钱和不可靠金钱，Dota里不可靠金钱在死亡后会有损失
+			PlayerResource:SetGold( nPlayerID, 0, false )
+			PlayerResource:SetGold( nPlayerID, 0, true )
+			-- 英雄升级，但不播放特效
+			for i=1,6 do
+				unit:HeroLevelUp( false )
 			end
-			return 0.5
-        end,0)
+			-- 升级0和1号技能，0号技能是普攻，1是第一个技能，这里0和1是根据 npc_heroes_custom.txt 中配置的Ability1和Ability2决定的
+			unit:UpgradeAbility( unit:GetAbilityByIndex( 0 ) )
+			unit:UpgradeAbility( unit:GetAbilityByIndex( 1 ) )
+			unit:UpgradeAbility( unit:GetAbilityByIndex( 2 ) )
+			unit:UpgradeAbility( unit:GetAbilityByIndex( 3 ) )
+			
+			-- 清除脏数据，效率应该比身体部分的移动行为频率高
+			self._GameMode:SetContextThink("ClearAllInvalid", 
+			function()
+				ClearAllInvalid(player_id)
+				return 0
+			end,0)
+			
+			-- 头部移动逻辑
+			if unit:IsOwnedByAnyPlayer() then
+				self._GameMode:SetContextThink("AutoMoveThink", 
+				function()
+					return self:OnAutoMoveThink(unit)
+				end,0)
+			end
+		end
    end
 end	
+
+-- 自动移动逻辑，抽离出来给技能按钮调用
+function WormWar:OnAutoMoveThink(unit)
+	local nPlayerID = unit:GetPlayerOwnerID()
+	local player_id = nPlayerID + 1
+	local forward_vector=unit:GetForwardVector()
+	--local truechaoxiang=forward_vector:Normalized()
+	local position=unit:GetAbsOrigin()
+	unit:MoveToPosition(position+forward_vector*500)
+
+	local aroundit=FindUnitsInRadius(DOTA_TEAM_NEUTRALS, position, nil, 
+									100,
+									DOTA_UNIT_TARGET_TEAM_FRIENDLY,
+									DOTA_UNIT_TARGET_ALL,
+									DOTA_UNIT_TARGET_FLAG_NONE,
+									FIND_ANY_ORDER,
+									false)
+	for k,v in pairs(aroundit) do
+		local name_label=v:GetContext("name")
+		if name_label then
+			if name_label=="yang" then
+				v:ForceKill(true)
+				CreateBody(player_id)
+			end
+			if name_label=="niu" then
+				v:ForceKill(true)
+				CreateBody(player_id)
+				CreateBody(player_id)
+			end
+			if name_label == "huoren" then
+				v:ForceKill(true)
+				KillHalfBody(player_id)
+				BroadcastMessage("碰到了火人，掉了一半长度",5)
+			end
+		end	
+	end
+	return 0
+end

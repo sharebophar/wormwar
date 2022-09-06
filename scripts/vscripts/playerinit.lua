@@ -54,6 +54,7 @@ end
 --[[玩家的数据结构
 {
 	[0]={
+		['init'] = true, // 是否被初始化
 		['body'] = { // group中是每个单位的实例，加body_index字段是因为unit死亡后无法获得它的任何属性，也就无法判定该unit在body中的位置
 			[1] = {['unit'] = hero_unit,['body_index'] = 1},
 			[2] = {['unit'] = followed_unit1,['body_index'] = 2},

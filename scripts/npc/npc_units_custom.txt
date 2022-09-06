@@ -147,7 +147,7 @@
 	"littlebug"
 	{
 	    "BaseClass"                 "npc_dota_creature"
-        "Model"                     "models/heroes/earthshaker/earthshaker.vmdl"
+        "Model"                     "models/heroes/nerubian_assassin/nerubian_assassin.vmdl"
         "ModelScale"                "0.4"
 
         "MinimapIcon" ""
@@ -189,5 +189,15 @@
     	"CombatClassDefend" "DOTA_COMBAT_CLASS_DEFEND_SOFT"        
     	"UnitRelationshipClass" "DOTA_NPC_UNIT_RELATIONSHIP_TYPE_DEFAULT"
     	"VisionDaytimeRange" "1500"
+		"ItemSlots"
+		{
+			"0"
+			{
+				"SlotIndex" "0"
+				"SlotName" "ability_effects_3"
+				"SlotText" "nyx_assassin_spiked_carapace"
+				"DisplayInLoadout" "1"
+			}
+		}
 	}
 }
